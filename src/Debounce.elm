@@ -100,8 +100,7 @@ schedule delay input (Debounce state) =
 
 {-| Start a task immediately, superseding any scheduled or running task.
 
-This is useful on submit, where the same work should run without the debounce
-delay.
+Use this when pending work should start without the debounce delay.
 
 -}
 runNow :

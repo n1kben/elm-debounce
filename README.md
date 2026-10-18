@@ -5,44 +5,44 @@ commands explicit.
 
 ```elm
 type alias Model =
-    { username : String
-    , availability : Debounce.Debounce Http.Error Availability
+    { value : Value
+    , debounce : Debounce.Debounce Error Output
     }
 
 
 type Msg
-    = UsernameChanged String
-    | UsernameAvailability (Debounce.Msg String Http.Error Availability)
+    = ValueReceived Value
+    | Debounced (Debounce.Msg Value Error Output)
 
 
 update msg model =
     case msg of
-        UsernameChanged username ->
+        ValueReceived value ->
             let
-                ( availability, cmd ) =
-                    Debounce.schedule 300 username model.availability
+                ( debounce, cmd ) =
+                    Debounce.schedule 300 value model.debounce
             in
             ( { model
-                | username = username
-                , availability = availability
+                | value = value
+                , debounce = debounce
               }
-            , Cmd.map UsernameAvailability cmd
+            , Cmd.map Debounced cmd
             )
 
-        UsernameAvailability subMsg ->
+        Debounced subMsg ->
             let
-                ( availability, cmd ) =
-                    Debounce.update checkUsername subMsg model.availability
+                ( debounce, cmd ) =
+                    Debounce.update performWork subMsg model.debounce
             in
-            ( { model | availability = availability }
-            , Cmd.map UsernameAvailability cmd
+            ( { model | debounce = debounce }
+            , Cmd.map Debounced cmd
             )
 ```
 
-On submit, run the same task immediately:
+When the delay should be skipped, run the same task immediately:
 
 ```elm
-Debounce.runNow checkUsername model.username model.availability
+Debounce.runNow performWork model.value model.debounce
 ```
 
 The input remains application-owned. The debounce state contains only the

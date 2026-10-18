@@ -3,7 +3,7 @@
     "name": "n1kben/elm-debounce",
     "summary": "Debounce tasks while keeping Elm update branches explicit",
     "license": "BSD-3-Clause",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "exposed-modules": [
         "Debounce"
     ],
